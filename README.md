@@ -12,7 +12,7 @@ The goal of this project is to develop an automated system for extracting struct
 - Ensure accuracy and robustness across various document formats.
 - Develop a user-friendly front-end for document upload and data visualization.
 - Implement filtering options for extracted data based on location, date, etc.
-- Optionally integrate an interview scheduling feature via call or email.
+- Optionally integrate an interview scheduling feature via call or email
 
 ## 2. *Technical Specifications*
 ### 2.1 *Hardware Requirements*
