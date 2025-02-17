@@ -19,11 +19,9 @@ chrome_options.add_argument("--allow-running-insecure-content")
 chrome_options.add_argument("--disable-features=IsolateOrigins,site-per-process")
 
 # Set download directory
-download_path = os.path.join(script_dir, "downloads")  # Ensure a dedicated folder for downloads
-os.makedirs(download_path, exist_ok=True)
+
 
 chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": download_path,
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
     "safebrowsing.enabled": False
