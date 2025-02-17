@@ -19,8 +19,6 @@ chrome_options.add_argument("--allow-running-insecure-content")
 chrome_options.add_argument("--disable-features=IsolateOrigins,site-per-process")
 
 # Set download directory
-
-
 chrome_options.add_experimental_option("prefs", {
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
@@ -50,21 +48,22 @@ else:
 
 # Launch Chrome
 driver = webdriver.Chrome(options=chrome_options)
-driver.get('http://www.iort.gov.tn/WD120AWP/WD120Awp.exe/CTX_8544-59-TDAMBeUVZA/RechercheAnnonceNumero/SYNC_1506620382')
+driver.get('http://www.iort.gov.tn/WD120AWP/WD120Awp.exe/CTX_5188-50-iZdJWgygIC/RechercheAnnonceNumero/SYNC_1510360320')
 
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'A32')))
 
 # Define years to download
-years_to_download = ['2014', '2024', '2025']
+years_to_download = ['2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
 for year in years_to_download:
     if last_year and int(year) < int(last_year):
         continue  # Skip years already completed
+
 
     select_year_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'A32')))
     Select(select_year_element).select_by_visible_text(year)
     print(f"Selected year: {year}")
 
-    for journal_number in range(last_journal, 231):
+    for journal_number in range(last_journal, 999):
         formatted_journal_number = f"{journal_number:03}"
         journal_number_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'A30')))
         journal_number_input.clear()
@@ -109,6 +108,11 @@ for year in years_to_download:
             break
 
     last_journal = 1  # Reset journal number for the next year
+    seen_numeros.clear()
+    with open(seen_numeros_file, "w") as f:
+        pass  # Empty the file
+
+
 
 print("Download process completed.")
 driver.quit()
