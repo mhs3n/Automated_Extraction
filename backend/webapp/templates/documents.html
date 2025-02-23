@@ -3,70 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documents</title>
+    <title>Document Viewer</title>
     <style>
-        #directory-container {
-            margin-top: 20px;
+        body {
+            font-family: Arial, sans-serif;
         }
-        #directory-container ul {
-            list-style-type: none;
-            padding: 0;
+
+        #file-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-        #directory-container li {
+
+        .year {
+            font-size: 18px;
+            font-weight: bold;
+            color: blue;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+
+        .pdf-container {
+            margin-left: 20px;
+        }
+
+        .pdf {
+            cursor: pointer;
+            color: darkred;
             margin: 5px 0;
         }
-        #directory-container a {
-            color: blue;
+
+        .pdf:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>File Browser</h1>
-    <div id="directory-container"></div>
+    <h1>Document Viewer</h1>
+    <div id="file-container"></div>
 
     <script>
-        const directoryContainer = document.getElementById("directory-container");
+        async function loadYears() {
+            const response = await fetch('/get-years');
+            const data = await response.json();
+            
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
 
-        // Function to fetch and display files and directories
-        function fetchDirectory(path = '') {
-            fetch(`/documents/${path}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        directoryContainer.innerHTML = `<p>${data.error}</p>`;
-                    } else {
-                        directoryContainer.innerHTML = '';  // Clear existing content
-                        const ul = document.createElement("ul");
+            const fileContainer = document.getElementById("file-container");
+            fileContainer.innerHTML = ""; // Clear previous content
 
-                        // Add directories
-                        data.directories.forEach(dir => {
-                            const li = document.createElement("li");
-                            const a = document.createElement("a");
-                            a.href = `#`;
-                            a.textContent = dir;
-                            a.onclick = () => fetchDirectory(path + '/' + dir);  // Recursively fetch subdirectory
-                            li.appendChild(a);
-                            ul.appendChild(li);
-                        });
-
-                        // Add files
-                        data.files.forEach(file => {
-                            const li = document.createElement("li");
-                            const a = document.createElement("a");
-                            a.href = `/download/${path}/${file}`;
-                            a.textContent = file;
-                            li.appendChild(a);
-                            ul.appendChild(li);
-                        });
-
-                        directoryContainer.appendChild(ul);
-                    }
-                });
+            data.years.forEach(year => {
+                const yearElement = document.createElement("div");
+                yearElement.textContent = year;
+                yearElement.classList.add("year");
+                yearElement.onclick = () => loadPdfs(yearElement, year);
+                fileContainer.appendChild(yearElement);
+            });
         }
 
-        // Initial fetch for root directory
-        fetchDirectory();
+        async function loadPdfs(yearElement, year) {
+            const pdfContainer = yearElement.nextElementSibling; // Get the next element (PDF container)
+
+            // If PDFs are already visible, hide them
+            if (pdfContainer && pdfContainer.classList.contains("pdf-container")) {
+                pdfContainer.remove();
+                return;
+            }
+
+            // Otherwise, fetch PDFs and display them
+            const response = await fetch(`/get-pdfs/${year}`);
+            const data = await response.json();
+
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
+
+            // Create a new div to hold the PDFs
+            const newPdfContainer = document.createElement("div");
+            newPdfContainer.classList.add("pdf-container");
+
+            data.pdfs.forEach(pdf => {
+                const pdfElement = document.createElement("div");
+                pdfElement.textContent = pdf;
+                pdfElement.classList.add("pdf");
+                pdfElement.onclick = () => window.open(`/view-pdf/${year}/${pdf}`, '_blank');
+                newPdfContainer.appendChild(pdfElement);
+            });
+
+            // Insert the new container after the clicked year
+            yearElement.parentNode.insertBefore(newPdfContainer, yearElement.nextSibling);
+        }
+
+        // Load years on page load
+        window.onload = loadYears;
     </script>
 </body>
 </html>

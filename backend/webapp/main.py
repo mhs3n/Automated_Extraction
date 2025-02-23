@@ -18,6 +18,8 @@ logging.basicConfig(level=logging.DEBUG)
 script_process = None
 stop_event = threading.Event()
 log_queue = Queue()  # Queue to store logs
+DOCUMENTS_PATH = "/home/Ray/Desktop/Automated_extraction/pdf_downloads"
+
 
 @app.get("/")
 def serve_html():
@@ -111,29 +113,31 @@ def stream_logs_endpoint():
 def serve_documents():
     return HTMLResponse(open("templates/documents.html").read())
 
-@app.get("/documents/{path:path}")
-def list_files(path: str = ""):
-    base_path = "/home/Ray/Desktop/Automated_extraction/pdf_downloads"
-    full_path = os.path.join(base_path, path)
+@app.get("/get-years")
+def get_available_years():
+    """Returns a list of years available in the documents folder."""
+    if not os.path.exists(DOCUMENTS_PATH):
+        return {"years": []}
     
-    if not os.path.exists(full_path):
-        return {"error": "Path does not exist"}
+    years = [d for d in os.listdir(DOCUMENTS_PATH) if os.path.isdir(os.path.join(DOCUMENTS_PATH, d))]
+    return {"years": sorted(years)}
 
-    # List directories and files
-    directories = []
-    files = []
-    for entry in os.listdir(full_path):
-        entry_path = os.path.join(full_path, entry)
-        if os.path.isdir(entry_path):
-            directories.append(entry)
-        elif entry.endswith(".pdf"):
-            files.append(entry)
+@app.get("/get-pdfs/{year}")
+def get_pdfs_for_year(year: str):
+    """Returns a list of PDFs available under the given year."""
+    year_path = os.path.join(DOCUMENTS_PATH, year)
+    
+    if not os.path.exists(year_path):
+        return {"error": "Year not found"}
+    
+    pdfs = [f for f in os.listdir(year_path) if f.endswith(".pdf")]
+    return {"pdfs": pdfs}
 
-    return {"directories": directories, "files": files}
+@app.get("/view-pdf/{year}/{filename}")
+def view_pdf(year: str, filename: str):
+    """Serve PDFs for inline viewing instead of downloading"""
+    pdf_path = os.path.join(DOCUMENTS_PATH, year, filename) 
+    if not os.path.exists(pdf_path):
+        return {"error": "File not found"}
 
-@app.get("/download/{year}/{filename}")
-def download_file(year: str, filename: str):
-    file_path = f"/home/Ray/Desktop/Automated_extraction/pdf_downloads/{year}/{filename}"
-    if os.path.exists(file_path):
-        return FileResponse(file_path)
-    return {"error": "File not found"}
+    return FileResponse(pdf_path, media_type="application/pdf")
