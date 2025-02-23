@@ -1,3 +1,8 @@
 easyocr
 pdf2img
 pytesseract
+fastapi 
+uvicorn 
+sqlalchemy 
+databases
+python-multipart

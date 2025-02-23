@@ -78,12 +78,12 @@ def extract_text_from_pdf(pdf_path):
     text_data = ocr_from_images(image_data)
 
     # Define output path and save JSON file
-    output_json = pdf_path.replace('.pdf', '_output.json').replace('/kaggle/input/', '/kaggle/working/text/')
+    output_json = "Data/"
     with open(output_json, "w", encoding="utf-8") as f:
         json.dump(text_data, f, ensure_ascii=False, indent=4)
 
     print(f"Text extracted and saved to {output_json}")
 
 # Example usage
-pdf_file_path = "Data/013Journal annonces2025.pdf"  # Update the path for your local machine
+pdf_file_path = "/home/Ray/Desktop/Automated_extraction/pdf_downloads/004JournalAnnonces2014.pdf"  # Update the path for your local machine
 extract_text_from_pdf(pdf_file_path)

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents</title>
+    <style>
+        #directory-container {
+            margin-top: 20px;
+        }
+        #directory-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #directory-container li {
+            margin: 5px 0;
+        }
+        #directory-container a {
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Browser</h1>
+    <div id="directory-container"></div>
+
+    <script>
+        const directoryContainer = document.getElementById("directory-container");
+
+        // Function to fetch and display files and directories
+        function fetchDirectory(path = '') {
+            fetch(`/documents/${path}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        directoryContainer.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        directoryContainer.innerHTML = '';  // Clear existing content
+                        const ul = document.createElement("ul");
+
+                        // Add directories
+                        data.directories.forEach(dir => {
+                            const li = document.createElement("li");
+                            const a = document.createElement("a");
+                            a.href = `#`;
+                            a.textContent = dir;
+                            a.onclick = () => fetchDirectory(path + '/' + dir);  // Recursively fetch subdirectory
+                            li.appendChild(a);
+                            ul.appendChild(li);
+                        });
+
+                        // Add files
+                        data.files.forEach(file => {
+                            const li = document.createElement("li");
+                            const a = document.createElement("a");
+                            a.href = `/download/${path}/${file}`;
+                            a.textContent = file;
+                            li.appendChild(a);
+                            ul.appendChild(li);
+                        });
+
+                        directoryContainer.appendChild(ul);
+                    }
+                });
+        }
+
+        // Initial fetch for root directory
+        fetchDirectory();
+    </script>
+</body>
+</html>
