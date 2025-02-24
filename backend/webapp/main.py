@@ -20,6 +20,7 @@ stop_event = threading.Event()
 log_queue = Queue()  # Queue to store logs
 DOCUMENTS_PATH = "/home/Ray/Desktop/Automated_extraction/pdf_downloads"
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def serve_html():
@@ -60,7 +61,7 @@ def get_last_downloaded():
     try:
         with open(file_path, "r") as f:
             last_file = f.read().strip()
-        return {"filename": last_file}
+        return {"filename": last_file+"\n"}
     except FileNotFoundError:
         return {"filename": "No downloads found"}
 
@@ -72,7 +73,7 @@ def stop_script():
         stop_event.set()  # Trigger the stop event
         script_process.terminate()  # Terminate the running script
         script_process = None
-        return {"message": "Script stopped"}
+        return {"message": "Script stopped\n"}
     return {"message": "No script is running."}
 
 def stream_logs():
@@ -83,7 +84,8 @@ def stream_logs():
             # Read stdout line by line using iter()
             for line in iter(script_process.stdout.readline, ''):
                 if line:
-                    log_queue.put(f"INFO: {line.strip()}")
+                    log_queue.put(f" {line.strip()}\n")
+                    
 
             # Read stderr line by line using iter()
             for line in iter(script_process.stderr.readline, ''):
@@ -102,7 +104,7 @@ def stream_logs_endpoint():
         global log_queue
         while True:
             log = log_queue.get()  # Blocking call, waits until there's a log
-            yield f"data: {log}\n\n"
+            yield f"data: {log}\n"
             log_queue.task_done()  # Mark the log as processed
 
     return StreamingResponse(log_stream(), media_type="text/event-stream")

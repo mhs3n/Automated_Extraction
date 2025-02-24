@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Script Executor</title>
+    <style>
+        #log-container {
+            width: 300px;  /* Adjust width */
+            height: 200px; /* Reduce height */
+            overflow-y: auto;
+            border: 1px solid #c2b8b8;
+            padding: 10px;
+            font-size: 14px; /* Reduce font size if needed */
+            background-color: #f1dcdc;
+        }
+    </style>
+</head>
+<body>
+    <h1>UI</h1>
+    <div>
+        <button id="start-button" onclick="startDownload()">Update Documents</button>
+        <button id="abort-button" style="display: none;" onclick="abortDownload()">Quit Updating</button>
+        <button id="documents-button" onclick="openDocuments()">Documents</button> <!-- New Documents button -->
+    </div>
+    <div id="log-container"></div>
+
+    <script>
+        const logContainer = document.getElementById("log-container");
+
+        function startDownload() {
+            fetch('/run-script', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    toggleButtons();  // Switch button state
+                    startStreamingLogs();  // Start receiving logs
+                });
+        }
+
+        function abortDownload() {
+            fetch('/stop-script', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    toggleButtons();  // Switch button state back
+                    clearLogs();  // Clear log container
+                    fetchLastDownloaded();  // Fetch last downloaded document
+                });
+        }
+
+        // New API endpoint to read last_downloaded.txt
+        function fetchLastDownloaded() {
+            fetch('/last-downloaded')  
+                .then(response => response.json())
+                .then(data => {
+                    const lastDownloadInfo = document.createElement("p");
+                    lastDownloadInfo.textContent = "Last downloaded: " + data.filename;
+                    logContainer.appendChild(lastDownloadInfo);
+                });
+        }
+
+        function clearLogs() {
+            logContainer.innerHTML = "";  // Remove all logs
+        }
+
+        function toggleButtons() {
+            const startButton = document.getElementById("start-button");
+            const abortButton = document.getElementById("abort-button");
+
+            startButton.style.display = startButton.style.display === 'none' ? 'block' : 'none';
+            abortButton.style.display = abortButton.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function startStreamingLogs() {
+    const eventSource = new EventSource('/stream-logs');
+
+    eventSource.onmessage = function(event) {
+        const newLog = document.createElement("p");
+        newLog.textContent = event.data;
+        logContainer.appendChild(newLog);
+        logContainer.scrollTop = logContainer.scrollHeight;  // Auto-scroll to bottom
+    };
+
+    eventSource.onerror = function(event) {
+        console.error("Error receiving logs: ", event);
+    };
+}
+
+
+        // Open the file browser page in a new window
+        function openDocuments() {
+            window.open("/documents", "_blank");  // Opens the documents page in a new window
+        }
+    </script>
+</body>
+</html>

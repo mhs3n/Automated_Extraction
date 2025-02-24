@@ -24,7 +24,7 @@ signal.signal(signal.SIGINT, handle_termination)
 # Get script directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
 download_base_dir = "/home/Ray/Desktop/Automated_extraction/pdf_downloads"  # Main downloads folder
-print(f"Updating the Documents", flush=True)
+print(f"Updating the Documents ", flush=True)
 
 # Ensure base download folder exists
 os.makedirs(download_base_dir, exist_ok=True)
@@ -81,7 +81,7 @@ WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'A32')))
 
 # Define years to download
-years_to_download = ['2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
+years_to_download = ['2014','2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023']
 for year in years_to_download:
     if stop_requested:
         break  # Stop execution if termination is requested
@@ -91,7 +91,8 @@ for year in years_to_download:
 
     select_year_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'A32')))
     Select(select_year_element).select_by_visible_text(year)
-    print(f"Selected year: {year}", flush=True)  # Ensure immediate flushing
+    print(f"Selected year: {year} \n", flush=True)  # Ensure immediate flushing
+
 
     for journal_number in range(last_journal, 999):
         if stop_requested:
@@ -112,7 +113,7 @@ for year in years_to_download:
             numero_text = numero_element.text.strip()
 
             if numero_text in seen_numeros:
-                print(f"Skipping duplicate Numéro {numero_text} for {year}-{formatted_journal_number}", flush=True)
+                print(f"Skipping duplicate Numéro {numero_text} for {year}-{formatted_journal_number}\n", flush=True)
                 continue  # Skip download
 
             # Save processed Numéro immediately
@@ -121,7 +122,7 @@ for year in years_to_download:
                 f.write(numero_text + "\n")
 
         except:
-            print(f"Could not find Numéro for {year}-{formatted_journal_number}. Skipping.", flush=True)
+            print(f"Could not find Numéro for {year}-{formatted_journal_number}. Skipping.\n", flush=True)
             continue
 
         # Attempt to download the PDF
@@ -137,7 +138,7 @@ for year in years_to_download:
             os.makedirs(year_folder, exist_ok=True)  # Ensure year folder exists
 
             # Find the newest downloaded file
-            time.sleep(3)  # Ensure file is fully written
+            time.sleep(5)  # Ensure file is fully written
             downloaded_files = sorted([f for f in os.listdir(download_base_dir) if f.endswith('.pdf')],
                                       key=lambda x: os.path.getmtime(os.path.join(download_base_dir, x)),
                                       reverse=True)
@@ -155,7 +156,7 @@ for year in years_to_download:
                 f.write(f"{year},{journal_number}")
 
         except:
-            print(f"No download button for journal {formatted_journal_number} in year {year}.", flush=True)
+            print(f"No download button for journal {formatted_journal_number} in year {year}.\n", flush=True)
             break
 
     last_journal = 1  # Reset journal number for the next year
@@ -163,5 +164,6 @@ for year in years_to_download:
     with open(seen_numeros_file, "w") as f:
         pass  # Empty the file
 
-print("Update process completed.", flush=True)
+
+print("\nUpdate process completed.", flush=True)
 driver.quit()
