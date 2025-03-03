@@ -1,0 +1,7 @@
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif; /* A sci-fi font */
+  background: linear-gradient(135deg, #051938 0%, #060e1f 100%); 
+  min-height: 100vh;
+  color: #FFFFFF; 
+}

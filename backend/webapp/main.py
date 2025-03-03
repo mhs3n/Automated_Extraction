@@ -2,14 +2,22 @@ import os
 import subprocess
 import threading
 import logging
-from fastapi import FastAPI
-from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from queue import Queue
+import sqlite3
 
 app = FastAPI()
 
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -143,3 +151,48 @@ def view_pdf(year: str, filename: str):
         return {"error": "File not found"}
 
     return FileResponse(pdf_path, media_type="application/pdf")
+
+DB_PATH = "/home/Ray/Desktop/Automated_extraction/backend/Database/companies.db"
+
+@app.get("/get-database-data")
+async def get_database_data():
+    try:
+        # Connect to the database
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+
+        # Fetch all data from the companies table
+        cursor.execute("SELECT * FROM companies")
+        companies = cursor.fetchall()
+
+        conn.close()
+
+        # Convert data into JSON format
+        company_list = []
+        for company in companies:
+            company_list.append({
+                "id": company[0],
+                "company_name": company[1],
+                "founders": company[2],
+                "location": company[3],
+                "capital": company[4],
+                "contact": company[5],
+                "news": company[6]
+            })
+
+        return JSONResponse(content=company_list)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=500)
+
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Ensure the folder exists
+
+@app.post("/upload-pdf")
+async def upload_pdf(file: UploadFile = File(...)):
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+
+    return {"message": f"File '{file.filename}' uploaded successfully!"}

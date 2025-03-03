@@ -1,0 +1,28 @@
+<div class="database-content">
+  <h3>Database</h3>
+  <table *ngIf="companies.length > 0; else noData" class="database-table">
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Founders</th>
+        <th>Location</th>
+        <th>Capital</th>
+        <th>Contact</th>
+        <th>News</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let company of companies">
+        <td>{{ company.Company }}</td>
+        <td>{{ company.Founders }}</td>
+        <td>{{ company.Location }}</td>
+        <td>{{ company.Capital }}</td>
+        <td>{{ company.Contact }}</td>
+        <td>{{ company.News }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noData>
+    <p>No data available.</p>
+  </ng-template>
+</div>

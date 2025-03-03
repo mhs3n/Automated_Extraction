@@ -11,40 +11,29 @@
             font-family: 'TT Octosquares Condensed Light';
             src: url('/static/tt_octosquares/TT Octosquares Trial Condensed Light.ttf') format('truetype');
         }
-
         body {
-            font-family: 'TT Octosquares Condensed Light', sans-serif;
-            background-color: #030a23;
+            font-family: 'TT Octosquares Condensed Light', sans-serif; /* Custom font */
+            background-color: #030a23; /* Dark blue background */
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start; /* Align content to the top */
             align-items: center;
             height: 100vh;
             flex-direction: column;
-            color: #fefefe;
+            color: #fefefe; /* White text color */
+            padding-top: 30vh; /* Adjust the top padding to place the content in the top 1/3 */
         }
 
         h1 {
             font-size: 2rem;
-            color: #fefefe;
+            color: #fefefe; /* White text */
             margin-bottom: 20px;
-        }
-
-        /* Logo Styling */
-        header {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-        header img {
-            max-width: 200px;
-            height: auto;
         }
 
         /* Button Styling */
         button {
-            background-color: #fd5b00;
+            background-color: #fd5b00; /* Orange button background */
             color: white;
             padding: 12px 20px;
             border: none;
@@ -56,7 +45,7 @@
         }
 
         button:hover {
-            background-color: #e65100;
+            background-color: #e65100; /* Darker orange on hover */
             transform: scale(1.05);
         }
 
@@ -67,21 +56,85 @@
 
         /* Log Container Styling */
         #log-container {
-    white-space: pre-wrap;  /* Ensures newlines are respected */
-    width: 80%;
-    max-width: 600px;
-    height: 200px;  /* Adjust as needed */
-    overflow-y: auto;  /* Ensures scrolling if content overflows */
-    border: 1px solid #fd5b00;
-    padding: 15px;
-    font-size: 14px;
-    background-color: #1c2633;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    font-family: 'TT Octosquares Condensed Light';
-    src: url('/static/tt_octosquares/TT Octosquares Trial Condensed Light.ttf') format('truetype');
-}
+            display: none; /* Hide by default */
+            white-space: pre-wrap;
+            width: 80%;
+            max-width: 600px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #fd5b00; /* Orange border */
+            padding: 15px;
+            font-size: 14px;
+            background-color: #1c2633; /* Slightly lighter blue background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Drag-and-Drop Zone Styling */
+        #drag-drop-zone {
+            width: 80%;
+            max-width: 600px;
+            height: 200px;
+            border: 2px dashed #fd5b00;
+            border-radius: 8px;
+            background-color: #1c2633;
+            color: #fefefe;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            margin: 10px 0;
+        }
+
+        #drag-drop-zone.dragover {
+            background-color: #303b4c;
+        }
+
+        /* File Input Styling */
+        #file-input {
+            display: none;
+        }
+
+        #file-select-container {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+            background-color: #1c2633;
+            border-radius: 8px;
+            border: 2px dashed #fd5b00;
+            color: #fefefe;
+        }
+
+        #file-select-container button {
+            display: inline-block;
+            background-color: #fd5b00;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Database Table Styling */
+        #database-table {
+            display: none; /* Hide by default */
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #1c2633;
+            color: #fefefe;
+            border-radius: 8px;
+        }
+
+        #database-table th, #database-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #fd5b00;
+        }
 
         /* Flexbox Layout for buttons */
         div {
@@ -91,12 +144,6 @@
             flex-wrap: wrap;
         }
 
-        /* Styling the paragraphs in the log container */
-        #log-container p {
-            margin: 0;
-            padding: 5px 0;
-        }
-
         /* Responsive design */
         @media (max-width: 600px) {
             button {
@@ -104,7 +151,7 @@
                 padding: 10px;
             }
 
-            #log-container {
+            #log-container, #database-table, #drag-drop-zone, #file-select-container {
                 width: 95%;
             }
         }
@@ -114,36 +161,186 @@
     <header>
         <img src="/static/cropped-logo.png" alt="Company Logo"> <!-- Logo Image -->
     </header>
-    <h1>Script Executor</h1>
+    <h1>Menu</h1>
     <div>
         <button id="start-button" onclick="startDownload()">Update Documents</button>
         <button id="abort-button" style="display: none;" onclick="abortDownload()">Quit Updating</button>
         <button id="documents-button" onclick="openDocuments()">Documents</button>
+        <button id="database-button" onclick="toggleDatabase()">Database</button>
+        <button id="upload-button">Upload PDF</button>
+        <input type="file" id="file-input" style="display: none;" accept="application/pdf">
+        <p id="upload-status" style="color: white;"></p>
     </div>
+
+    <!-- File Selection & Drag-and-Drop -->
+    <div id="file-select-container">
+        <button onclick="triggerFileInput()">Select PDF File</button>
+        <p>or</p>
+        <div id="drag-drop-zone" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+            Drag and Drop PDF Here
+        </div>
+    </div>
+
+    <!-- Log container (hidden initially) -->
     <div id="log-container"></div>
+
+    <!-- Database table (hidden initially) -->
+    <table id="database-table">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Founders</th>
+                <th>Location</th>
+                <th>Capital</th>
+                <th>Contact</th>
+                <th>News</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Database rows will be inserted here dynamically -->
+        </tbody>
+    </table>
 
     <script>
         const logContainer = document.getElementById("log-container");
+        const databaseTable = document.getElementById("database-table");
+        const uploadButton = document.getElementById("upload-button");
+        const dragDropZone = document.getElementById("drag-drop-zone");
+        const fileInput = document.getElementById("file-input");
+        const uploadStatus = document.getElementById("upload-status");
+        const fileSelectContainer = document.getElementById("file-select-container");
+
+        // Toggle drag-and-drop zone visibility
+        uploadButton.addEventListener("click", function() {
+            if (fileSelectContainer.style.display === "none") {
+                fileSelectContainer.style.display = "block"; // Show file select zone
+                logContainer.style.display = "none"; // Hide logs
+            } else {
+                fileSelectContainer.style.display = "none"; // Hide file select zone
+                logContainer.style.display = "none"; // Hide logs
+                uploadStatus.textContent = ""; // Clear status
+            }
+        });
+
+        // Allow drop
+        function allowDrop(event) {
+            event.preventDefault();
+            dragDropZone.classList.add('dragover');
+        }
+
+        // Handle drop event
+        function handleDrop(event) {
+            event.preventDefault();
+            dragDropZone.classList.remove('dragover');
+            const file = event.dataTransfer.files[0];
+            if (file && file.type === "application/pdf") {
+                uploadFile(file);
+            } else {
+                uploadStatus.textContent = "Please upload a valid PDF file.";
+            }
+        }
+
+        // Trigger file input on button click
+        function triggerFileInput() {
+            fileInput.click();
+        }
+
+        // Upload file via file input
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type === "application/pdf") {
+                uploadFile(file);
+            } else {
+                uploadStatus.textContent = "Please upload a valid PDF file.";
+            }
+        });
+
+        // Upload file via drag-and-drop or file input
+        function uploadFile(file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/upload-pdf", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                uploadStatus.textContent = data.message;
+                fileSelectContainer.style.display = "none"; // Hide the file select/drop zone after upload
+            })
+            .catch(error => {
+                console.error("Error uploading file:", error);
+                uploadStatus.textContent = "Upload failed!";
+            });
+        }
 
         function startDownload() {
+            logContainer.style.display = "block"; 
+    
             fetch('/run-script', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    toggleButtons();  // Switch button state
-                    startStreamingLogs();  // Start receiving logs
+                    toggleButtons();
+                    startStreamingLogs();
                 });
         }
-
+    
         function abortDownload() {
             fetch('/stop-script', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    toggleButtons();  // Switch button state back
-                    clearLogs();  // Clear log container
-                    fetchLastDownloaded();  // Fetch last downloaded document
+                    toggleButtons();
+                    clearLogs();
+                    setTimeout(() => {
+                        logContainer.style.display = "none";
+                    }, 5000);
+                    fetchLastDownloaded();
                 });
+        }
+
+        function toggleDatabase() {
+            if (databaseTable.style.display === "none") {
+                databaseTable.style.display = "table";
+                fetchDatabaseData();
+            } else {
+                databaseTable.style.display = "none";
+            }
+        }
+
+        function fetchDatabaseData() {
+            fetch('/get-database-data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error("Error fetching data:", data.error);
+                        return;
+                    }
+                    populateDatabaseTable(data);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+
+        function populateDatabaseTable(data) {
+            const databaseTable = document.getElementById("database-table"); 
+            const tableBody = databaseTable.querySelector("tbody");
+
+            tableBody.innerHTML = "";
+
+            data.forEach(company => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${company.company_name}</td>
+                    <td>${company.founders}</td>
+                    <td>${company.location}</td>
+                    <td>${company.capital}</td>
+                    <td>${company.contact}</td>
+                    <td>${company.news}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
         function fetchLastDownloaded() {
@@ -157,33 +354,32 @@
         }
 
         function clearLogs() {
-            logContainer.innerHTML = "";  // Remove all logs
+            logContainer.innerHTML = "";
         }
 
         function toggleButtons() {
             const startButton = document.getElementById("start-button");
             const abortButton = document.getElementById("abort-button");
-
+    
             startButton.style.display = startButton.style.display === 'none' ? 'block' : 'none';
             abortButton.style.display = abortButton.style.display === 'none' ? 'block' : 'none';
         }
-
+    
         function startStreamingLogs() {
             const eventSource = new EventSource('/stream-logs');
-
+    
             eventSource.onmessage = function(event) {
                 const newLog = document.createElement("p");
                 newLog.textContent = event.data;
                 logContainer.appendChild(newLog);
-                logContainer.scrollTop = logContainer.scrollHeight;  // Auto-scroll to bottom
+                logContainer.scrollTop = logContainer.scrollHeight;
             };
-
+    
             eventSource.onerror = function(event) {
                 console.error("Error receiving logs: ", event);
             };
         }
 
-        // Open the file browser page in a new window
         function openDocuments() {
             window.open("/documents", "_blank");
         }

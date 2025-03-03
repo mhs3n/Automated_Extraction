@@ -1,0 +1,10 @@
+h2 {
+    color: #FF6200;
+    text-shadow: 0 0 8px rgba(255, 98, 0, 0.6);
+  }
+  
+  p {
+    color: #FFFFFF;
+    font-size: 1.1em;
+    line-height: 1.5;
+  }

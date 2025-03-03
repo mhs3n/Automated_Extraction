@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "UI": {
+    "angular_web_app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/ui",
+            "outputPath": "dist/angular_web_app",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -21,11 +21,16 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "assets"
+                }
+              ],
             "styles": [
               "src/styles.css"
             ],
@@ -59,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "UI:build:production"
+              "buildTarget": "angular_web_app:build:production"
             },
             "development": {
-              "buildTarget": "UI:build:development"
+              "buildTarget": "angular_web_app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,8 +97,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": false
   }
 }

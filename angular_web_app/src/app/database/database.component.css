@@ -1,0 +1,42 @@
+.database-content {
+    text-align: center;
+    color: #FFFFFF;
+  }
+  
+  h3 {
+    color: #FF6200;
+    text-shadow: 0 0 10px rgba(255, 98, 0, 0.7);
+  }
+  
+  .database-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  th, td {
+    padding: 10px;
+    border: 1px solid rgba(255, 98, 0, 0.3);
+  }
+  
+  th {
+    background: rgba(255, 98, 0, 0.2);
+    color: #FF6200;
+    text-shadow: 0 0 5px rgba(255, 98, 0, 0.7);
+    font-weight: bold;
+  }
+  
+  td {
+    color: #FFFFFF;
+  }
+  
+  tr:nth-child(even) {
+    background: rgba(26, 42, 68, 0.1);
+  }
+  
+  p {
+    color: #FFFFFF;
+  }

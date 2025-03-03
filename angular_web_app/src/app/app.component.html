@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="header">
+    <img
+      src="assets/logo.png"
+      alt="Company Logo"
+      class="logo"
+      [@logoSlide]="logoState"
+    >
+    <button
+      *ngIf="currentSection"
+      (click)="showSection(null)"
+      class="back-button"
+      [@backButtonFade]="currentSection ? 'visible' : 'hidden'"
+    >Back</button>
+  </div>
+
+  <div class="button-group" [@buttonFade]="buttonState">
+    <button
+      (click)="showSection('about')"
+      *ngIf="currentSection !== 'about' && buttonState === 'visible'"
+    >About</button>
+    <button
+      (click)="showSection('database')"
+      *ngIf="currentSection !== 'database' && buttonState === 'visible'"
+    >Database</button>
+    <button
+      (click)="showSection('documents')"
+      *ngIf="currentSection !== 'documents' && buttonState === 'visible'"
+    >Documents</button>
+  </div>
+
+  <div *ngIf="currentSection" class="section-header">
+    <h2
+      class="section-title"
+      [ngClass]="{'documents-title': currentSection === 'documents'}"
+      [@contentSlide]="currentSection ? 'visible' : 'hidden'"
+    >{{ currentSection | titlecase }}</h2>
+  </div>
+
+  <div
+    *ngIf="currentSection === 'about'"
+    class="section-content"
+    [@contentSlide]="currentSection === 'about' ? 'visible' : 'hidden'"
+  >
+    <app-about></app-about>
+  </div>
+  <div
+    *ngIf="currentSection === 'database'"
+    class="section-content"
+    [@contentSlide]="currentSection === 'database' ? 'visible' : 'hidden'"
+  >
+    <app-database></app-database>
+  </div>
+  <div
+    *ngIf="currentSection === 'documents'"
+    class="section-content"
+    [@contentSlide]="currentSection === 'documents' ? 'visible' : 'hidden'"
+  >
+    <app-documents></app-documents>
+  </div>
+</div>

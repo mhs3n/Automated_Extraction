@@ -1,0 +1,114 @@
+/* Reset defaults and set a futuristic base */
+body {
+  margin: 0;
+  font-family: 'Orbitron', sans-serif;
+  background: linear-gradient(135deg, #1A2A44 0%, #0F1B33 100%);
+  min-height: 100vh;
+  color: #FFFFFF;
+}
+
+/* Main container */
+.container {
+  padding: 40px;
+  max-width: 1600px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  position: relative;
+  height: 150px;
+}
+
+/* Logo */
+.logo {
+  width: 150px;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(255, 98, 0, 0.5));
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 40px;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Back button */
+.back-button {
+  background: #FF6200;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 98, 0, 0.5);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+/* Back button hover */
+.back-button:hover {
+  background: #FFFFFF;
+  color: #1A2A44;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Button group */
+.button-group {
+  text-align: center;
+  margin-top: 80px;
+}
+
+/* Buttons */
+button {
+  background: #FF6200;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 24px;
+  margin: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 98, 0, 0.5);
+}
+
+button:hover {
+  background: #FFFFFF;
+  color: #1A2A44;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Section header */
+.section-header {
+  text-align: center;
+}
+
+/* Section title */
+.section-title {
+  font-size: 2em;
+  color: #FF6200;
+  text-shadow: 0 0 10px rgba(255, 98, 0, 0.7);
+  margin: 10px 0;
+}
+
+/* Section content */
+.section-content {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 98, 0, 0.3);
+  box-shadow: 0 0 20px rgba(26, 42, 68, 0.5);
+}

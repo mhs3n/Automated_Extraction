@@ -1,0 +1,53 @@
+<div class="documents-buttons">
+  <button
+    (click)="toggleUpdateDocuments()"
+    class="doc-button"
+  >{{ isUpdatingDocuments ? 'Quit Updating' : 'Update Documents' }}</button>
+  <label for="upload-input" class="doc-button">Upload</label>
+  <input
+    id="upload-input"
+    type="file"
+    accept=".pdf"
+    (change)="uploadDocuments($event)"
+    style="display: none;"
+  >
+  <button (click)="toggleViewDocuments()" class="doc-button">View Documents</button>
+</div>
+
+<div class="documents-content">
+  
+  <!-- Default View (Last Downloaded) -->
+  <div *ngIf="viewMode === 'default' && !showLogBox" class="default-view">
+    <h3>Last Downloaded Document</h3>
+    <p>{{ lastDownloaded }}</p>
+  </div>
+
+  <!-- Folders View -->
+  <div *ngIf="viewMode === 'folders'">
+    <h3>Available Years</h3>
+    <ul *ngIf="years.length > 0; else noYears">
+      <li *ngFor="let year of years" (click)="selectYear(year)" class="year-item">
+        {{ year }}
+      </li>
+    </ul>
+    <ng-template #noYears>
+      <p>No years available.</p>
+    </ng-template>
+
+    <div *ngIf="selectedYear">
+      <h3>PDFs for {{ selectedYear }}</h3>
+      <ul *ngIf="pdfs.length > 0; else noPdfs">
+        <li *ngFor="let pdf of pdfs" (click)="viewDocument(pdf)" class="pdf-item">
+          {{ pdf }}
+        </li>
+      </ul>
+      <ng-template #noPdfs>
+        <p>No PDFs available for this year.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+<div *ngIf="showLogBox" class="log-box">
+  <h3>Logs</h3>
+  <div *ngFor="let log of logs" class="log-line">{{ log }}</div>
+</div>
