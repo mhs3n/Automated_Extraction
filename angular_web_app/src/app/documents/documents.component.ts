@@ -17,7 +17,7 @@ export class DocumentsComponent implements OnDestroy {
   selectedYear: string | null = null;
   pdfs: string[] = [];
   logs: string[] = [];
-  baseUrl = 'http://localhost:8000';
+  baseUrl = '/api';
   lastDownloaded: string = '';
   viewMode: 'default' | 'folders' = 'default';
   showLogBox = false;

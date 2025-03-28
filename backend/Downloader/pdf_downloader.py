@@ -9,7 +9,6 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-# Flag to handle termination gracefully
 stop_requested = False
 
 def handle_termination(signum, frame):
@@ -17,13 +16,11 @@ def handle_termination(signum, frame):
     print("Update stopped", flush=True)
     stop_requested = True
 
-# Catch termination signals (SIGTERM, SIGINT)
 signal.signal(signal.SIGTERM, handle_termination)
 signal.signal(signal.SIGINT, handle_termination)
 
-# Get script directory
 script_dir = os.path.dirname(os.path.abspath(__file__))
-download_base_dir = "/home/Ray/Desktop/Automated_extraction/pdf_downloads"  # Main downloads folder
+download_base_dir = "/home/ray/Desktop/PDFS"  # Main downloads folder
 print(f"Updating the Documents ", flush=True)
 
 # Ensure base download folder exists
@@ -31,13 +28,13 @@ os.makedirs(download_base_dir, exist_ok=True)
 
 # Set up Chrome options with user profile
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("user-data-dir=/home/Ray/selenium_profile")
-chrome_options.add_argument("profile-directory=Profile 1")
+chrome_options.add_argument("user-data-dir=/home/ray/.config/google-chrome")
+chrome_options.add_argument("profile-directory=Default")  
 chrome_options.add_argument("--disable-web-security")
 chrome_options.add_argument("--disable-site-isolation-trials")
 chrome_options.add_argument("--allow-running-insecure-content")
 chrome_options.add_argument("--disable-features=IsolateOrigins,site-per-process")
-chrome_options.add_argument("--headless=new")  # Run in headless mode
+#chrome_options.add_argument("--headless=new")  # Run in headless mode
 
 # Set Chrome download preferences
 chrome_prefs = {

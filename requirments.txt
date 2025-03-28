@@ -6,4 +6,4 @@ uvicorn
 sqlalchemy 
 databases
 python-multipart
-sqlite3
+

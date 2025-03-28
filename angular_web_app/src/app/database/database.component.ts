@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DatabaseComponent {
   companies: any[] = [];
-  baseUrl = 'http://localhost:8000';
+  baseUrl = '/api';
 
   constructor(private http: HttpClient) {
     this.fetchDatabaseData();
